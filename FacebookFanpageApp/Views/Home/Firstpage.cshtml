@@ -1,0 +1,89 @@
+﻿@model FacebookFanpageApp.Models.FacebookModel
+@{
+    ViewBag.Title = "Home Page";
+}
+<div id="fb-root"></div>
+<div>
+    <p>Inhalt... JS SDK braucht bereits Third party cookies.</p>
+</div>
+@if (Model.Me != null)
+{
+    <p>@Model.Me.Name</p>
+    <p>@Model.Me.FirstName</p>
+    <p>@Model.Me.LastName</p>
+    <p>@Model.Me.Email</p>
+}
+else
+{
+    <div id="fbStatus"></div>
+}
+
+@section scripts{
+    <script>
+        var loginButtonHtml = "<button id='loginButton' class='ui-dialog ui-dialog-buttonpane'>anmelden</button>";
+        // Additional JS functions here
+        window.fbAsyncInit = function () {
+            FB.init({
+                appId: '@Model.App_Id', // App ID
+                channelUrl: '@Model.ChannelUrl', // Channel File
+                status: true, // check login status
+                cookie: true, // enable cookies to allow the server to access the session
+                xfbml: true  // parse XFBML
+            });
+
+            FB.getLoginStatus(function (response) {
+                if (response.status === 'connected') {
+                    // the user is logged in and has authenticated your
+                    // app, and response.authResponse supplies
+                    // the user's ID, a valid access token, a signed
+                    // request, and the time the access token 
+                    // and signed request each expire
+
+                } else if (response.status === 'not_authorized') {
+                    // the user is logged in to Facebook, 
+                    // but has not authenticated your app
+                    SetStatus(loginButtonHtml);
+                    jQuery("#loginButton").click(function (e) {
+                        e.preventDefault();
+                        login();
+                    });
+                } else {
+                    // the user isn't logged in to Facebook.
+                    SetStatus("<p>Status unkown. No cookies?!</p>" + loginButtonHtml);
+                    jQuery("#loginButton").click(function (e) {
+                        e.preventDefault();
+                        login();
+                    });
+                }
+            });
+            function login() {
+                FB.login(function (response) {
+                    var state = "ok";
+                    if (!response.authResponse) {
+                        state = "abgebrochen";
+                    } else {
+                        var redirectUrl = "@Model.FanPageUrl";
+                        top.location.href = redirectUrl;
+                        return;
+                    }
+                    SetStatus(state + "<br />" + loginButtonHtml);
+                    jQuery("#loginButton").click(function (e) {
+                        e.preventDefault();
+                        login();
+                    });
+                }, { scope: 'email,user_likes' });
+            }
+            function SetStatus(text) {
+                jQuery("#fbStatus").html(text);
+            }
+        };
+        // Load the SDK asynchronously
+        (function (d) {
+            var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+            if (d.getElementById(id)) { return; }
+            js = d.createElement('script'); js.id = id; js.async = true;
+            js.src = "//connect.facebook.net/de_DE/all.js";
+            ref.parentNode.insertBefore(js, ref);
+        }(document));
+    </script>
+}

@@ -4,12 +4,12 @@ using System.Linq;
 using System.Web;
 using System.Configuration;
 using System.Web.Helpers;
+using Facebook;
 
-namespace FacebookFanpageApp.Models
-{
-	public class FacebookModel
-	{
+namespace FacebookFanpageApp.Models {
+	public class FacebookModel {
 		public MeModel Me { get; set; }
+		public FbSignedRequest SignedRequest { get; set; }
 
 		public string App_Id
 		{
@@ -19,7 +19,14 @@ namespace FacebookFanpageApp.Models
 			}
 			set { }
 		}
-
+		public string Scope
+		{
+			get
+			{
+				return ConfigurationManager.AppSettings["fb_scope"];
+			}
+			set { }
+		}
 		public string FanPageUrl
 		{
 			get
@@ -49,54 +56,83 @@ namespace FacebookFanpageApp.Models
 			}
 			set { }
 		}
-		//public string CanvasUrl
-		//{
-		//    get
-		//    {
-		//        return ConfigurationManager.AppSettings["fb_canvasUrl"];
-		//    }
-		//    set { }
-		//}
-		//public string CanvasPage
-		//{
-		//	get
-		//	{
-		//		return ConfigurationManager.AppSettings["fb_canvasPage"];
-		//	}
-		//	set { }
-		//}
-		//public string RedirectUri
-		//{
-		//	get
-		//	{
-		//		return ConfigurationManager.AppSettings["fb_oauth_redirect"];
-		//	}
-		//	set { }
-		//}
-		public string State { get; set; }
 
-		FbSignedRequest _signedRequestObject;
-		public FbSignedRequest SignedRequestObject
+
+		//FbSignedRequest _signedRequestObject;
+		//public FbSignedRequest SignedRequestObject
+		//{
+		//	get
+		//	{
+		//		return _signedRequestObject;
+		//	}
+		//	set
+		//	{
+		//		if (value != null)
+		//			_signedRequestObject = Json.Decode(value.ToString(), typeof(FbSignedRequest));
+		//	}
+		//}
+	}
+	public class FbSignedRequest {
+		public FBPage Page { get; set; }
+		public FBUser User { get; set; }
+		public long UserId { get; set; }
+		public string Algorithm { get; set; }
+		public DateTime IssuedAt { get; set; }
+		public string OauthToken { get; set; }
+		public DateTime Expires { get; set; }
+
+		public FbSignedRequest(JsonObject data)
 		{
-			get
+			UserId = data.GetLongValue("user_id");
+			Algorithm = data.GetStringValue("algorithm");
+			OauthToken = data.GetStringValue("oauth_token");
+			Expires = Facebook.DateTimeConvertor.FromUnixTime(data.GetStringValue("expires"));
+			IssuedAt = Facebook.DateTimeConvertor.FromUnixTime(data.GetStringValue("issued_at"));
+			object val = null;
+			if (data.TryGetValue("user", out val))
 			{
-				return _signedRequestObject;
+				User = new FBUser((JsonObject)val);
 			}
-			set
+			if (data.TryGetValue("page", out val))
 			{
-				if (value != null)
-					_signedRequestObject = Json.Decode(value.ToString(), typeof(FbSignedRequest));
+				Page = new FBPage((JsonObject)val);
 			}
 		}
 	}
-	public class FbSignedRequest
-	{
-		public string user { get; set; }
-		public string algorithm { get; set; }
-		public string issued_at { get; set; }
-		public string user_id { get; set; }
-		public string oauth_token { get; set; }
-		public string expires { get; set; }
+	//+		[2]	{"id":"129507630531720","liked":true,"admin":true}	object {Facebook.JsonObject}
 
+	public class FBPage {
+		public long Id { get; set; }
+		public bool Liked { get; set; }
+		public bool Admin { get; set; }
+		public FBPage(JsonObject data)
+		{
+			Id = data.GetLongValue("id");
+			Liked = data.GetBoolValue("liked");
+			Admin = data.GetBoolValue("admin");
+		}
 	}
+	public class FBAge {
+		public int Min { get; set; }
+		public FBAge(JsonObject data)
+		{
+			Min = data.GetIntValue("min");
+		}
+	}
+	public class FBUser {
+		public FBAge Age { get; set; }
+		public string Country { get; set; }
+		public string Locale { get; set; }
+		public FBUser(JsonObject data)
+		{
+			object val = null;
+			if (data.TryGetValue("age", out val))
+			{
+				Age = new FBAge((JsonObject)val);
+			}
+			Country = data.GetStringValue("country");
+			Locale = data.GetStringValue("locale");
+		}
+	}
+	
 }

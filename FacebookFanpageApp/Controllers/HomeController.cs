@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -8,19 +9,38 @@ using FacebookFanpageApp.Models;
 
 namespace FacebookFanpageApp.Controllers {
 	public class HomeController : Controller {
-
+		/// <summary>
+		/// Default route outside Facebook iframe
+		/// </summary>
+		/// <returns>redirect to Facebook Tab Page</returns>
+		public ActionResult NoSignedRequest()
+		{
+			FacebookModel model = new FacebookModel();
+			return Redirect(model.FanPageUrl);
+		}
+		/// <summary>
+		/// Here goes the redirect from FacebookHttpHandler of CustomFacebookHandler see RouteConfig.cs
+		/// after POST request from Facebook
+		/// </summary>
+		/// <param name="signedRequest">Facebook signed_request</param>
+		/// <returns>View with js redirect</returns>
 		public ActionResult SetSession(string signedRequest)
 		{
 			if (!String.IsNullOrEmpty(signedRequest))
 			{
 				Session.Add("signedRequest", signedRequest);
-				return View();
 			}
-			string rUrl = Url.Action("Firstpage","Home");
-			return RedirectToAction("Firstpage","Home");
+			return RedirectToAction("Firstpage", "Home");
 		}
+		/// <summary>
+		/// Evalueate signed request and showin Login / Permisson button or 
+		/// displaying Facebook data
+		/// </summary>
+		/// <returns>View</returns>
 		public ActionResult Firstpage()
 		{
+			ViewBag.Message = "Facebook Fanpage App";
+
 			string signedRequest = String.Empty;
 			try
 			{
@@ -30,42 +50,28 @@ namespace FacebookFanpageApp.Controllers {
 			if (String.IsNullOrEmpty(signedRequest))
 				return View("NoSignedRequest");
 
-			ViewBag.Message = "Facebook Fanpage App";
 			FacebookModel model = new FacebookModel();
 			FacebookClient client = new FacebookClient();
-			client.AppSecret = model.App_Secret; dynamic signedRequestObject = null;
-			if (client.TryParseSignedRequest(signedRequest, out signedRequestObject))
-			{
-				if (!String.IsNullOrEmpty(signedRequestObject.oauth_token))
-				{
-					FacebookClient authClient = new FacebookClient(signedRequestObject.oauth_token);
-					model.Me = new MeModel((JsonObject)authClient.Get("/me"));
-				}
-			}
-			return View(model);
-		}
-		public ActionResult NoSignedRequest()
-		{
-			FacebookModel model = new FacebookModel();
-			return View(model);
-		}
-
-		public ActionResult ContinueConnected(string uid, string accessToken, string signedRequest)
-		{
-			//string signed_request = Session["signed_request"].ToString();
-			ViewBag.AccessToken = accessToken;
-			ViewBag.SignedRequest = signedRequest;
-			ViewBag.Uid = uid;
-			FacebookModel model = new FacebookModel();
-			FacebookClient client = new FacebookClient(accessToken);
 			client.AppSecret = model.App_Secret;
 			dynamic signedRequestObject = null;
 			if (client.TryParseSignedRequest(signedRequest, out signedRequestObject))
 			{
-				model.Me = new MeModel((JsonObject)client.Get("/me"));
-				return View(model);
+				model.SignedRequest = new FbSignedRequest(signedRequestObject);
 			}
-			return View();
+			if (!String.IsNullOrEmpty(model.SignedRequest.OauthToken))
+			{
+				FacebookClient authClient = new FacebookClient(model.SignedRequest.OauthToken);
+				JsonObject data = (JsonObject)authClient.Get("/me");
+				model.Me = new MeModel(data);
+			}
+			if (model.SignedRequest.User.Locale.Equals("de_de", StringComparison.InvariantCultureIgnoreCase))
+			{
+				System.Threading.Thread.CurrentThread.CurrentCulture = 
+					System.Threading.Thread.CurrentThread.CurrentUICulture = 
+					new CultureInfo("de-DE");
+			}
+			return View(model);
 		}
+
 	}
 }

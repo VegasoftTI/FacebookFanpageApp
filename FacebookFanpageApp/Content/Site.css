@@ -66,6 +66,7 @@ h4, h5, h6 {
 }
 
 h1 {
+    padding:0 0.5em 1em;
     font-size: 2em;
 }
 
@@ -95,7 +96,7 @@ h5, h6 {
 ----------------------------------------------------------*/
 .content-wrapper {
     margin: 0 auto;
-    max-width: 960px;
+    max-width: 810px;
 }
 
 #body {
@@ -122,7 +123,10 @@ footer {
     clear: both;
     background-color: #e2e2e2;
     font-size: .8em;
-    height: 100px;
+}
+.dashed-border
+{
+	border:2px dotted blue;
 }
 
 
@@ -660,10 +664,10 @@ tr.pager td {
         background-position: 10px 0;
     }
 
-    .content-wrapper {
+    /*.content-wrapper {
         padding-right: 10px;
         padding-left: 10px;
-    }
+    }*/
 
     .featured .content-wrapper {
         padding: 10px;
@@ -746,7 +750,7 @@ tr.pager td {
 
     footer {
         text-align: center;
-        height: auto;
+        /*height: auto;*/
         padding: 10px 0;
     }
 

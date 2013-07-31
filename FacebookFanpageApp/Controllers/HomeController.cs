@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Globalization;
 using System.Linq;
 using System.Web;
@@ -15,8 +16,15 @@ namespace FacebookFanpageApp.Controllers {
 		/// <returns>redirect to Facebook Tab Page</returns>
 		public ActionResult NoSignedRequest()
 		{
+			bool fb_show_app_start_view_without_facebook = false;
+			bool.TryParse(ConfigurationManager.AppSettings["fb_show_app_start_view_without_facebook"], 
+				out fb_show_app_start_view_without_facebook);
+
 			FacebookModel model = new FacebookModel();
-			return Redirect(model.FanPageUrl);
+			if (fb_show_app_start_view_without_facebook)
+				return View(model);
+			else
+				return Redirect(model.FanPageUrl);
 		}
 		/// <summary>
 		/// Here goes the redirect from FacebookHttpHandler of CustomFacebookHandler see RouteConfig.cs
@@ -66,8 +74,8 @@ namespace FacebookFanpageApp.Controllers {
 			}
 			if (model.SignedRequest.User.Locale.Equals("de_de", StringComparison.InvariantCultureIgnoreCase))
 			{
-				System.Threading.Thread.CurrentThread.CurrentCulture = 
-					System.Threading.Thread.CurrentThread.CurrentUICulture = 
+				System.Threading.Thread.CurrentThread.CurrentCulture =
+					System.Threading.Thread.CurrentThread.CurrentUICulture =
 					new CultureInfo("de-DE");
 			}
 			return View(model);

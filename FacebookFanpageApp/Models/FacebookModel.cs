@@ -54,7 +54,6 @@ namespace FacebookFanpageApp.Models {
 
 				return url;
 			}
-			set { }
 		}
 
 
@@ -134,5 +133,5 @@ namespace FacebookFanpageApp.Models {
 			Locale = data.GetStringValue("locale");
 		}
 	}
-	
+
 }

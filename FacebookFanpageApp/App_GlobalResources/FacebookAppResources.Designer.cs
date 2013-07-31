@@ -70,7 +70,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;p&gt;ASP.Net routing injects a session id into the url in case of AutoDetect or UseUri settings of sessionState cookieless=&quot;AutoDetect|UseUri&quot; and the browser does not allow third party cookies.&lt;/p&gt;
+        ///   Looks up a localized string similar to &lt;p&gt;ASP.Net routing injects a session id into the url in case of AutoDetect or UseUri settings for sessionState cookieless=&quot;AutoDetect|UseUri&quot; if the browser does not allow third party cookies.&lt;/p&gt;
         ///    &lt;p&gt;JS SDK needs third party cookies too. Thus I have build this demo app.&lt;/p&gt;&lt;p&gt;This app also demonstrates multi language support according user settings.&lt;/p&gt;.
         /// </summary>
         internal static string introText {

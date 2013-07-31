@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Configuration;
 using System.Web;
 using System.Web.Routing;
 
@@ -35,7 +34,10 @@ namespace FacebookFanpageApp {
 			string signed_request = context.Request.Form["signed_request"];
 			if (!String.IsNullOrEmpty(signed_request))
 			{
-				context.Response.Redirect("/Home/setsession?signedRequest=" + signed_request);
+				context.Response.Redirect(String.Format(
+					"{0}?signedRequest={1}",
+					ConfigurationManager.AppSettings["fb_initial_post_request_redirect"],
+					signed_request));
 			}
 		}
 

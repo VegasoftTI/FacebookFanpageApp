@@ -1,7 +1,5 @@
 <%@ WebHandler Language="C#" Class="FacebookFanpageApp.FacebookChannelHandler" %>
- 
-namespace FacebookFanpageApp
-{
+namespace FacebookFanpageApp {
     using System;
     using System.Web;
 
@@ -63,8 +61,7 @@ namespace FacebookFanpageApp
     /// &lt;/script&gt;
     ///
     /// </remarks>
-    public class FacebookChannelHandler : IHttpHandler
-    {
+    public class FacebookChannelHandler : IHttpHandler {
         public void ProcessRequest(HttpContext context)
         {
             HttpResponse response = context.Response;
@@ -75,6 +72,7 @@ namespace FacebookFanpageApp
             response.AppendHeader("Cache-Control", "maxage=" + cacheExpires);
             response.AppendHeader("Expires", DateTime.Now.ToUniversalTime().AddSeconds(cacheExpires).ToString("r"));
             context.Response.ContentType = "text/html";
+
             context.Response.Write("<script src=\"//connect.facebook.net/en_US/all.js\"></script>");
         }
 

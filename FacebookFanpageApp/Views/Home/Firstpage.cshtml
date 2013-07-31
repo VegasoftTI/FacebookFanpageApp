@@ -31,6 +31,7 @@ else
     <div id="fbStatus"></div>
 }
 
+
 @section scripts{
     <script>
         var loginButtonHtml = "<button id='loginButton' class='ui-dialog ui-dialog-buttonpane'>@FacebookAppResources.loginButton</button>";
@@ -39,11 +40,15 @@ else
         window.fbAsyncInit = function () {
             FB.init({
                 appId: '@Model.App_Id', // App ID
-                //channelUrl: '@Model.ChannelUrl', // Channel File
+                channelUrl: '@Model.ChannelUrl', // Channel File
                 status: true, // check login status
                 cookie: true, // enable cookies to allow the server to access the session
                 xfbml: true  // parse XFBML
             });
+
+            var bH = jQuery('body').height() + 10;
+            FB.Canvas.setSize({ width: 810, height: bH });
+            //FB.Canvas.setAutoGrow();
 
             FB.getLoginStatus(function (response) {
                 var connected = false;
@@ -70,6 +75,7 @@ else
                     });
                 }
             });
+
             function login() {
                 FB.login(function (response) {
                     var state = "<p>ok</p>";

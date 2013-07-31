@@ -10,12 +10,13 @@ namespace FacebookFanpageApp {
 		public static void RegisterRoutes(RouteCollection routes)
 		{
 			routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
-			//it is important to set a fake RouteValueDictionary for defaults and constraints
+			//it is important to set RouteValueDictionaries for defaults and constraints
 			//otherwise the following MapRoute entry do not work
+			//the constraint controller must not be used as "normal" controller for any route map
 			routes.Add(
 				new Route("start",
-					new RouteValueDictionary() { { "controller", "qwewqewqeqweq" } },
-					new RouteValueDictionary() { { "controller", "qwewqewqeqweq" } },
+					new RouteValueDictionary() { { "controller", "start" } },
+					new RouteValueDictionary() { { "controller", "start" } },
 					new FacebookFanpageApp.CustomFacebookHandler())
 			);
 			routes.MapRoute(

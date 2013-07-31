@@ -98,7 +98,11 @@ h5, h6 {
     margin: 0 auto;
     max-width: 810px;
 }
-
+#fbStatus
+{
+	height:100px;
+	overflow:hidden;
+}
 #body {
     background-color: #efeeef;
     clear: both;

@@ -113,9 +113,12 @@ namespace FacebookFanpageApp.Models {
 	}
 	public class FBAge {
 		public int Min { get; set; }
+		public int Max { get; set; }
 		public FBAge(JsonObject data)
 		{
 			Min = data.GetIntValue("min");
+			if (Min < 21)
+				Max = data.GetIntValue("max");
 		}
 	}
 	public class FBUser {

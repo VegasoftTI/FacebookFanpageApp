@@ -31,7 +31,6 @@ else
     <div id="fbStatus"></div>
 }
 
-
 @section scripts{
     <script>
         var loginButtonHtml = "<button id='loginButton' class='ui-dialog ui-dialog-buttonpane'>@FacebookAppResources.loginButton</button>";
@@ -47,8 +46,10 @@ else
             });
 
             var bH = jQuery('body').height() + 10;
-            FB.Canvas.setSize({ width: 810, height: bH });
-            //FB.Canvas.setAutoGrow();
+            var bW = jQuery('body').width();
+            FB.Canvas.setSize({ width: bW, height: bH });
+
+            //FB.Canvas.setAutoGrow(10);
 
             FB.getLoginStatus(function (response) {
                 var connected = false;

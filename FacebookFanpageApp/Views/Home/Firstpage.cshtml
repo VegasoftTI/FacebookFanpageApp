@@ -30,7 +30,14 @@ else
 {
     <div id="fbStatus"></div>
 }
-
+@section topscripts{
+    <script>
+        //check for page is outside facebook env.
+        if (top.location.href == location.href) {
+            top.location.href = "@Model.FanPageUrl";
+        }
+    </script>
+}
 @section scripts{
     <script>
         var loginButtonHtml = "<button id='loginButton' class='ui-dialog ui-dialog-buttonpane'>@FacebookAppResources.loginButton</button>";

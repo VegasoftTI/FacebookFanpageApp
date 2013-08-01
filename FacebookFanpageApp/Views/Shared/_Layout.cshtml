@@ -6,7 +6,9 @@
     <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
     <meta name="viewport" content="width=device-width" />
     @Styles.Render("~/Content/css")
+    @RenderSection("topscripts", required: false)
     @Scripts.Render("~/bundles/modernizr")
+
 </head>
 <body class="content-wrapper">
     <header class="content-wrapper">

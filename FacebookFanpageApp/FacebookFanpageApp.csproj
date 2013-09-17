@@ -309,6 +309,7 @@
     <Content Include="Views\Home\Firstpage.cshtml" />
     <Content Include="Views\Home\NoSignedRequest.cshtml" />
     <Content Include="Views\Home\Offline.cshtml" />
+    <Content Include="Views\Home\ConfigError.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

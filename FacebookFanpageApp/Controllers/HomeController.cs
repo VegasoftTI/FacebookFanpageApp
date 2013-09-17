@@ -47,6 +47,11 @@ namespace FacebookFanpageApp.Controllers {
 			{
 				model.SignedRequest = new FbSignedRequest(signedRequestObject);
 			}
+			if (model.SignedRequest == null)
+			{
+				return View("ConfigError");
+			}
+
 			if (!String.IsNullOrEmpty(model.SignedRequest.OauthToken))
 			{
 				FacebookClient authClient = new FacebookClient(model.SignedRequest.OauthToken);
